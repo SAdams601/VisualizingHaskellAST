@@ -23,5 +23,10 @@ executable VisualizingHaskellAST
                        , ghc
                        , Strafunski-StrategyLib
                        , syb
-  hs-source-dirs:      ./src      
+                       , ghc-paths
+                       , ghc-syb-utils
+                       , mtl
+                       , directory
+                       , filepath
+  hs-source-dirs:      ./src     
   default-language:    Haskell2010
