@@ -26,16 +26,20 @@ module Main where
          [targetFiles] -> do
             let filesList = read targetFiles :: [String]
 
-            strs <- example filesList
-            mapM_ (\s -> putStr (s ++ "\n===================END OF MODULE=================\n")) strs
+            (modNames,strs) <- readModuleStrings filesList
+            mapM_ putStr $ constructOutputStrings modNames strs
  
          _ -> do
             name <- getProgName
             hPutStrLn stderr $ "usage: " ++ name ++ " <string> <integer>"
             exitFailure
 
-   example :: [String] -> IO [String]
-   example targetFiles =
+   constructOutputStrings :: [String] -> [String] -> [String]
+   constructOutputStrings [] [] = [] 
+   constructOutputStrings (m:ms) (s:strs) = (s ++ "\n===================END OF MODULE: " ++ m ++ "=================\n") : constructOutputStrings ms strs
+
+   readModuleStrings :: [String] -> IO ([String],[String])
+   readModuleStrings targetFiles =
       runGhc (Just libdir) $ do
             dflags <- getSessionDynFlags
             let dflags' = foldl  xopt_set dflags [Opt_Cpp, Opt_ImplicitPrelude, Opt_MagicHash]
@@ -55,7 +59,7 @@ module Main where
             
             return $ getModNames graph
 
-            return $ (map (\m -> showData TypeChecker 2 ((tm_typechecked_source . dm_typechecked_module) m)) desugaredMods)
+            return $ (modNames, (map (\m -> showData TypeChecker 2 ((tm_typechecked_source . dm_typechecked_module) m)) desugaredMods))
 
                where 
                   getDesugaredMod :: GhcMonad m => String -> m DesugaredModule 
