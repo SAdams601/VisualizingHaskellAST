@@ -11,3 +11,6 @@ The script is expecting a list of strings that indicate what files to load into 
 ```bash
 cabal run -- "[\"testing/A.hs\",\"testing/B.hs\"]"
 
+Sample Output
+-------------
+
