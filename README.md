@@ -13,4 +13,5 @@ cabal run -- "[\"testing/A.hs\",\"testing/B.hs\"]"
 
 Sample Output
 -------------
+The file *testing/sampleShowData.hs* contains sample output from the program running on A.hs and B.hs. It has the .hs file extension but is not an actual haskell file. The output is *similar enough* to Haskell code that syntax highlighting helps make the output much more readable.
 

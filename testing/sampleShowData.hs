@@ -1,208 +1,237 @@
+Preprocessing executable 'VisualizingHaskellAST' for
+VisualizingHaskellAST-0.1.0.0...
 {Bag(Located (HsBind Var)): 
   [
-   -- ============== y = 0 line 6
-   (L {../HaRe/test/GenDef/D4.hs:6:1-3} 
+   (L {testing/A.hs:6:4-14} 
     (AbsBinds 
-     --abs_tvs :: [TyVar] type TyVar = Var
-     [] 
-     -- abs_ev_vars :: [EvVar], type EvVar = EvId, type EvId = Id, type Id = Var
-     [] 
-     -- abs_exports :: [ABExport idL] This seems to be some sort of structure to help handle what this variable looks like to a client module ?
+     [{Var: a}] 
+     [{Var: $dNum}] 
      [
-      (ABE {Var: D4.y} {Var: y} 
-       (WpHole) 
+      (ABE {Var: A.b} {Var: b} 
+       (WpCompose 
+        (WpCompose 
+         (WpCompose 
+          (WpTyLam {Var: a}) 
+          (WpEvLam {Var: $dNum})) 
+         (WpLet 
+          ({abstract:TcEvBinds}))) 
+        (WpCompose 
+         (WpEvApp 
+          (EvId {Var: $dNum})) 
+         (WpTyApp a))) 
        (SpecPrags 
-        []))]
-      -- abs_ev_binds :: TcEvBinds   
-     ({abstract:TcEvBinds}) 
-     -- abs_binds :: LHsBinds idL
-     {Bag (Located (HsBind Var)): 
+        []))] 
+     ({abstract:TcEvBinds}) {Bag(Located (HsBind Var)): 
      [
-      (L {../HaRe/test/GenDef/D4.hs:6:1-3} 
+      (L {testing/A.hs:6:4-14} 
        (FunBind 
-        (L {../HaRe/test/GenDef/D4.hs:6:1} {Var: y}) 
+        (L {testing/A.hs:6:4} {Var: b}) 
         (False) 
         (MatchGroup 
          [
-          (L {../HaRe/test/GenDef/D4.hs:6:1-3} 
+          (L {testing/A.hs:6:4-14} 
+           (Match 
+            [
+             (L {testing/A.hs:6:6} 
+              (VarPat {Var: x}))] 
+            (Nothing) 
+            (GRHSs 
+             [
+              (L {testing/A.hs:6:10-14} 
+               (GRHS 
+                [] 
+                (L {testing/A.hs:6:10-14} 
+                 (OpApp 
+                  (L {testing/A.hs:6:10} 
+                   (HsVar {Var: x})) 
+                  (L {testing/A.hs:6:12} 
+                   (HsWrap 
+                    (WpCompose 
+                     (WpEvApp 
+                      (EvId {Var: $dNum})) 
+                     (WpTyApp a)) 
+                    (HsVar {Var: GHC.Num.+}))) {Fixity: infixl 6} 
+                  (L {testing/A.hs:6:14} 
+                   (HsOverLit 
+                    (OverLit 
+                     (HsIntegral 
+                      (5)) 
+                     (False) 
+                     (HsApp 
+                      (L {<no location info>} 
+                       (HsWrap 
+                        (WpCompose 
+                         (WpEvApp 
+                          (EvId {Var: $dNum})) 
+                         (WpTyApp a)) 
+                        (HsVar {Var: GHC.Num.fromInteger}))) 
+                      (L {<no location info>} 
+                       (HsLit 
+                        (HsInteger 
+                         (5) GHC.Integer.Type.Integer)))) a)))))))] 
+             (EmptyLocalBinds))))] a -> a) 
+        (WpHole) {!NameSet placeholder here!} 
+        (Nothing)))]})),
+   (L {testing/A.hs:4:4-43} 
+    (AbsBinds 
+     [] 
+     [] 
+     [
+      (ABE {Var: A.main} {Var: main} 
+       (WpHole) 
+       (SpecPrags 
+        []))] 
+     ({abstract:TcEvBinds}) {Bag(Located (HsBind Var)): 
+     [
+      (L {testing/A.hs:4:4-43} 
+       (FunBind 
+        (L {testing/A.hs:4:4-7} {Var: main}) 
+        (False) 
+        (MatchGroup 
+         [
+          (L {testing/A.hs:4:4-43} 
            (Match 
             [] 
             (Nothing) 
             (GRHSs 
              [
-              (L {../HaRe/test/GenDef/D4.hs:6:3} 
+              (L {testing/A.hs:4:11-43} 
                (GRHS 
                 [] 
-                (L {../HaRe/test/GenDef/D4.hs:6:3} 
-                 (HsOverLit 
-                  (OverLit 
-                   (HsIntegral 
-                    (0)) 
-                   (False) 
-                   (HsApp 
-                    (L {<no location info>} 
-                     (HsWrap 
-                      (WpCompose 
-                       (WpEvApp 
-                        (EvId {Var: $dNum})) 
-                       (WpTyApp GHC.Integer.Type.Integer)) 
-                      (HsVar {Var: GHC.Num.fromInteger}))) 
-                    (L {<no location info>} 
-                     (HsLit 
-                      (HsInteger 
-                       (0) GHC.Integer.Type.Integer)))) GHC.Integer.Type.Integer)))))] 
-             (EmptyLocalBinds))))] GHC.Integer.Type.Integer) 
+                (L {testing/A.hs:4:11-43} 
+                 (HsApp 
+                  (L {testing/A.hs:4:11-15} 
+                   (HsWrap 
+                    (WpCompose 
+                     (WpEvApp 
+                      (EvId {Var: $dShow})) 
+                     (WpTyApp [GHC.Types.Char])) 
+                    (HsVar {Var: System.IO.print}))) 
+                  (L {testing/A.hs:4:17-43} 
+                   (HsPar 
+                    (L {testing/A.hs:4:18-42} 
+                     (OpApp 
+                      (L {testing/A.hs:4:18-27} 
+                       (HsLit 
+                        (HsString {FastString: "Result: "}))) 
+                      (L {testing/A.hs:4:29-30} 
+                       (HsWrap 
+                        (WpTyApp GHC.Types.Char) 
+                        (HsVar {Var: GHC.Base.++}))) {Fixity: infixr 5} 
+                      (L {testing/A.hs:4:32-42} 
+                       (HsPar 
+                        (L {testing/A.hs:4:33-41} 
+                         (HsApp 
+                          (L {testing/A.hs:4:33-36} 
+                           (HsWrap 
+                            (WpCompose 
+                             (WpEvApp 
+                              (EvId {Var: $dShow})) 
+                             (WpTyApp GHC.Integer.Type.Integer)) 
+                            (HsVar {Var: GHC.Show.show}))) 
+                          (L {testing/A.hs:4:37-41} 
+                           (HsPar 
+                            (L {testing/A.hs:4:38-40} 
+                             (HsApp 
+                              (L {testing/A.hs:4:38} 
+                               (HsWrap 
+                                (WpCompose 
+                                 (WpEvApp 
+                                  (EvId {Var: $dNum})) 
+                                 (WpTyApp GHC.Integer.Type.Integer)) 
+                                (HsVar {Var: A.b}))) 
+                              (L {testing/A.hs:4:40} 
+                               (HsOverLit 
+                                (OverLit 
+                                 (HsIntegral 
+                                  (5)) 
+                                 (False) 
+                                 (HsApp 
+                                  (L {<no location info>} 
+                                   (HsWrap 
+                                    (WpCompose 
+                                     (WpEvApp 
+                                      (EvId {Var: $dNum})) 
+                                     (WpTyApp GHC.Integer.Type.Integer)) 
+                                    (HsVar {Var: GHC.Num.fromInteger}))) 
+                                  (L {<no location info>} 
+                                   (HsLit 
+                                    (HsInteger 
+                                     (5) GHC.Integer.Type.Integer)))) GHC.Integer.Type.Integer)))))))))))))))))))] 
+             (EmptyLocalBinds))))] GHC.Types.IO ()) 
         (WpHole) {!NameSet placeholder here!} 
-        (Nothing)))]})),
-
-      -- =============== End line six ===================
-
-      -- =============== Line 8: f x =x + ( y + 1) =========================
-   (L {../HaRe/test/GenDef/D4.hs:8:1-17} 
+        (Nothing)))]}))]}
+===================END OF MODULE: A=================
+{Bag(Located (HsBind Var)): 
+  [
+   (L {testing/B.hs:3:4-21} 
     (AbsBinds 
-     [] 
-     [] 
+     [{Var: a}] 
+     [{Var: $dNum}] 
      [
-      (ABE {Var: D4.f} {Var: f} 
-       (WpHole) 
+      (ABE {Var: B.plusFive} {Var: plusFive} 
+       (WpCompose 
+        (WpCompose 
+         (WpCompose 
+          (WpTyLam {Var: a}) 
+          (WpEvLam {Var: $dNum})) 
+         (WpLet 
+          ({abstract:TcEvBinds}))) 
+        (WpCompose 
+         (WpEvApp 
+          (EvId {Var: $dNum})) 
+         (WpTyApp a))) 
        (SpecPrags 
         []))] 
      ({abstract:TcEvBinds}) {Bag(Located (HsBind Var)): 
      [
-      (L {../HaRe/test/GenDef/D4.hs:8:1-17} 
+      (L {testing/B.hs:3:4-21} 
        (FunBind 
-        (L {../HaRe/test/GenDef/D4.hs:8:1} {Var: f}) 
+        (L {testing/B.hs:3:4-11} {Var: plusFive}) 
         (False) 
         (MatchGroup 
          [
-          (L {../HaRe/test/GenDef/D4.hs:8:1-17} 
+          (L {testing/B.hs:3:4-21} 
            (Match 
             [
-             (L {../HaRe/test/GenDef/D4.hs:8:3} 
+             (L {testing/B.hs:3:13} 
               (VarPat {Var: x}))] 
             (Nothing) 
             (GRHSs 
              [
-              (L {../HaRe/test/GenDef/D4.hs:8:6-17} 
+              (L {testing/B.hs:3:17-21} 
                (GRHS 
                 [] 
-                (L {../HaRe/test/GenDef/D4.hs:8:6-17} 
+                (L {testing/B.hs:3:17-21} 
                  (OpApp 
-                  (L {../HaRe/test/GenDef/D4.hs:8:6} 
+                  (L {testing/B.hs:3:17} 
                    (HsVar {Var: x})) 
-                  (L {../HaRe/test/GenDef/D4.hs:8:8} 
+                  (L {testing/B.hs:3:19} 
                    (HsWrap 
                     (WpCompose 
                      (WpEvApp 
                       (EvId {Var: $dNum})) 
-                     (WpTyApp GHC.Integer.Type.Integer)) 
+                     (WpTyApp a)) 
                     (HsVar {Var: GHC.Num.+}))) {Fixity: infixl 6} 
-                  (L {../HaRe/test/GenDef/D4.hs:8:10-17} 
-                   (HsPar 
-                    (L {../HaRe/test/GenDef/D4.hs:8:12-16} 
-                     (OpApp 
-                      (L {../HaRe/test/GenDef/D4.hs:8:12} 
-                       (HsVar {Var: D4.y})) 
-                      (L {../HaRe/test/GenDef/D4.hs:8:14} 
+                  (L {testing/B.hs:3:21} 
+                   (HsOverLit 
+                    (OverLit 
+                     (HsIntegral 
+                      (5)) 
+                     (False) 
+                     (HsApp 
+                      (L {<no location info>} 
                        (HsWrap 
                         (WpCompose 
                          (WpEvApp 
                           (EvId {Var: $dNum})) 
-                         (WpTyApp GHC.Integer.Type.Integer)) 
-                        (HsVar {Var: GHC.Num.+}))) {Fixity: infixl 6} 
-                      (L {../HaRe/test/GenDef/D4.hs:8:16} 
-                       (HsOverLit 
-                        (OverLit 
-                         (HsIntegral 
-                          (1)) 
-                         (False) 
-                         (HsApp 
-                          (L {<no location info>} 
-                           (HsWrap 
-                            (WpCompose 
-                             (WpEvApp 
-                              (EvId {Var: $dNum})) 
-                             (WpTyApp GHC.Integer.Type.Integer)) 
-                            (HsVar {Var: GHC.Num.fromInteger}))) 
-                          (L {<no location info>} 
-                           (HsLit 
-                            (HsInteger 
-                             (1) GHC.Integer.Type.Integer)))) GHC.Integer.Type.Integer)))))))))))] 
-             (EmptyLocalBinds))))] GHC.Integer.Type.Integer -> GHC.Integer.Type.Integer) 
+                         (WpTyApp a)) 
+                        (HsVar {Var: GHC.Num.fromInteger}))) 
+                      (L {<no location info>} 
+                       (HsLit 
+                        (HsInteger 
+                         (5) GHC.Integer.Type.Integer)))) a)))))))] 
+             (EmptyLocalBinds))))] a -> a) 
         (WpHole) {!NameSet placeholder here!} 
-        (Nothing)))]})),
-
-    -- ======================== End Line 8 ===========================
-
-    -- ======================== Line 10: sumFun xs = sum $ map f xs ==
-   (L {../HaRe/test/GenDef/D4.hs:10:1-26} 
-    (AbsBinds 
-     [] 
-     [] 
-     [
-      (ABE {Var: D4.sumFun} {Var: sumFun} 
-       (WpHole) 
-       (SpecPrags 
-        []))] 
-     ({abstract:TcEvBinds}) {Bag(Located (HsBind Var)): 
-     [
-      (L {../HaRe/test/GenDef/D4.hs:10:1-26} 
-       (FunBind 
-        -- fun_id
-        (L {../HaRe/test/GenDef/D4.hs:10:1-6} {Var: sumFun}) 
-        -- fun_infix
-        (False)
-        -- fun_matches :: HsExpr.MatchGroup
-        (MatchGroup 
-         --[LMatch id] 
-         -- LMatch id = Located (Match id)
-         [
-          (L {../HaRe/test/GenDef/D4.hs:10:1-26} 
-           (Match 
-            [
-             (L {../HaRe/test/GenDef/D4.hs:10:8-9} 
-              (VarPat {Var: xs}))] 
-            (Nothing) 
-            (GRHSs 
-             [
-              (L {../HaRe/test/GenDef/D4.hs:10:13-26} 
-               (GRHS 
-                [] 
-                (L {../HaRe/test/GenDef/D4.hs:10:13-26} 
-                 (OpApp 
-                  (L {../HaRe/test/GenDef/D4.hs:10:13-15} 
-                   (HsWrap 
-                    (WpCompose 
-                     (WpEvApp 
-                      (EvId {Var: $dNum})) 
-                     (WpTyApp GHC.Integer.Type.Integer)) 
-                    (HsVar {Var: Data.List.sum}))) 
-                  (L {../HaRe/test/GenDef/D4.hs:10:17} 
-                   (HsWrap 
-                    (WpCompose 
-                     (WpTyApp GHC.Integer.Type.Integer) 
-                     (WpTyApp [GHC.Integer.Type.Integer])) 
-                    (HsVar {Var: GHC.Base.$}))) {Fixity: infixr 0} 
-                  (L {../HaRe/test/GenDef/D4.hs:10:19-26} 
-                   (HsApp 
-                    (L {../HaRe/test/GenDef/D4.hs:10:19-23} 
-                     (HsApp 
-                      (L {../HaRe/test/GenDef/D4.hs:10:19-21} 
-                       (HsWrap 
-                        (WpCompose 
-                         (WpTyApp GHC.Integer.Type.Integer) 
-                         (WpTyApp GHC.Integer.Type.Integer)) 
-                        (HsVar {Var: GHC.Base.map}))) 
-                      (L {../HaRe/test/GenDef/D4.hs:10:23} 
-                       (HsVar {Var: D4.f})))) 
-                    (L {../HaRe/test/GenDef/D4.hs:10:25-26} 
-                     (HsVar {Var: xs}))))))))] 
-             (EmptyLocalBinds))))] [GHC.Integer.Type.Integer] -> GHC.Integer.Type.Integer)
-        -- fun_co_fn      
-        (WpHole) 
-        -- bind_fvs
-        {!NameSet placeholder here!}
-        --fun_tick
-        (Nothing)
-        ))]}))
-]}
+        (Nothing)))]}))]}
+===================END OF MODULE: B=================
