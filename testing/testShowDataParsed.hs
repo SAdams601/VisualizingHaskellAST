@@ -1,17 +1,25 @@
 
   (L {testing/test.hs:1:1} 
    (HsModule 
+    -- hsmodName :: Maybe (Located ModuleName)
     (Just 
      (L {testing/test.hs:1:8-11} {ModuleName: Test})) 
+    -- hsmodExports :: Maybe [LIE name]
     (Nothing) 
+    -- hsmodImports :: [LImportDecl name]
     [] 
+    -- hsmodDecls :: [LHsDecl name]
     [
      (L {testing/test.hs:3:1-13} 
+      -- ValD (HsBind id) - constructor for HsDecl 
       (ValD 
        (FunBind 
+        -- fun_id :: Located idL
         (L {testing/test.hs:3:1} 
          (Unqual {OccName: f})) 
-        (False) 
+        -- fun_infix :: Bool - if true this is an infix declaration
+        (False)
+        -- fun_matches :: MatchGroup idR - the payload 
         (MatchGroup 
          [
           (L {testing/test.hs:3:1-13} 
@@ -40,9 +48,15 @@
                   (L {testing/test.hs:3:13} 
                    (HsVar 
                     (Unqual {OccName: b})))))))] 
-             (EmptyLocalBinds))))] {!type placeholder here?!}) 
-        (WpHole) {!NameSet placeholder here!} 
-        (Nothing))))] 
-    (Nothing) 
+             (EmptyLocalBinds))))] {!type placeholder here?!})
+        -- fun_co_fn :: HsWrapper
+        (WpHole)
+        -- bind_fvs :: NameSet 
+        {!NameSet placeholder here!}
+        -- fun_tick :: Maybe (Tickish Id) 
+        (Nothing))))]
+    -- hsmodDeprecMessage :: Maybe WarningTxt     
+    (Nothing)
+    -- hsmodHaddockModHeader :: Maybe LHsDocString 
     (Nothing)))
 ===================END OF MODULE: Test=================
