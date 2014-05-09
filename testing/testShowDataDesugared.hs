@@ -1,5 +1,61 @@
 {Bag(Located (HsBind Var)): 
   [
+   (L {testing/test.hs:5:1-13} 
+    (AbsBinds 
+     [{Var: a}] 
+     [{Var: $dNum}] 
+     [
+      (ABE {Var: Test.g} {Var: g} 
+       (WpCompose 
+        (WpCompose 
+         (WpCompose 
+          (WpTyLam {Var: a}) 
+          (WpEvLam {Var: $dNum})) 
+         (WpLet 
+          ({abstract:TcEvBinds}))) 
+        (WpCompose 
+         (WpEvApp 
+          (EvId {Var: $dNum})) 
+         (WpTyApp a))) 
+       (SpecPrags 
+        []))] 
+     ({abstract:TcEvBinds}) {Bag(Located (HsBind Var)): 
+     [
+      (L {testing/test.hs:5:1-13} 
+       (FunBind 
+        (L {testing/test.hs:5:1} {Var: g}) 
+        (False) 
+        (MatchGroup 
+         [
+          (L {testing/test.hs:5:1-13} 
+           (Match 
+            [
+             (L {testing/test.hs:5:3} 
+              (VarPat {Var: a})),
+             (L {testing/test.hs:5:5} 
+              (VarPat {Var: b}))] 
+            (Nothing) 
+            (GRHSs 
+             [
+              (L {testing/test.hs:5:9-13} 
+               (GRHS 
+                [] 
+                (L {testing/test.hs:5:9-13} 
+                 (OpApp 
+                  (L {testing/test.hs:5:9} 
+                   (HsVar {Var: a})) 
+                  (L {testing/test.hs:5:11} 
+                   (HsWrap 
+                    (WpCompose 
+                     (WpEvApp 
+                      (EvId {Var: $dNum})) 
+                     (WpTyApp a)) 
+                    (HsVar {Var: GHC.Num.-}))) {Fixity: infixl 6} 
+                  (L {testing/test.hs:5:13} 
+                   (HsVar {Var: b}))))))] 
+             (EmptyLocalBinds))))] a -> a -> a) 
+        (WpHole) {!NameSet placeholder here!} 
+        (Nothing)))]})),
    (L {testing/test.hs:3:1-13} 
     (AbsBinds 
      [{Var: a}] 
