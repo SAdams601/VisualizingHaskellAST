@@ -23,10 +23,10 @@ module Main where
    main = do
       args <- getArgs
       case args of
-         [targetFiles] -> do
+         [compilerStage, targetFiles] -> do
             let filesList = read targetFiles :: [String]
 
-            (modNames,strs) <- readModuleStrings filesList
+            (modNames,strs) <- readModuleStrings compilerStage filesList
             mapM_ putStr $ constructOutputStrings modNames strs
  
          _ -> do
@@ -38,8 +38,8 @@ module Main where
    constructOutputStrings [] [] = [] 
    constructOutputStrings (m:ms) (s:strs) = (s ++ "\n===================END OF MODULE: " ++ m ++ "=================\n") : constructOutputStrings ms strs
 
-   readModuleStrings :: [String] -> IO ([String],[String])
-   readModuleStrings targetFiles =
+   readModuleStrings :: String -> [String] -> IO ([String],[String])
+   readModuleStrings compilerStage targetFiles =
       runGhc (Just libdir) $ do
             dflags <- getSessionDynFlags
             let dflags' = foldl  xopt_set dflags [Opt_Cpp, Opt_ImplicitPrelude, Opt_MagicHash]
@@ -50,24 +50,23 @@ module Main where
             ts <- getTargets
 
             load LoadAllTargets
-            
+
             graph <- getModuleGraph
             targets <- getTargets
             let modNames = getModNames graph
 
-            desugaredMods <- mapM getDesugaredMod modNames
-            
-            return $ getModNames graph
-
-            return $ (modNames, (map (\m -> showData TypeChecker 2 ((tm_typechecked_source . dm_typechecked_module) m)) desugaredMods))
+            mods <- mapM getMods modNames
+            let stage = getStage compilerStage
+            return $ (modNames, (map (retrieveSource compilerStage) mods))
 
                where 
-                  getDesugaredMod :: GhcMonad m => String -> m DesugaredModule 
-                  getDesugaredMod modName = do
+                  getMods :: GhcMonad m => String -> m (ParsedModule, TypecheckedModule, DesugaredModule)
+                  getMods modName = do
                      modSum <- getModSummary $ mkModuleName modName
                      p <- parseModule modSum
                      t <- typecheckModule p
-                     desugarModule t
+                     d <- desugarModule t
+                     return (p,t,d)
                   getModNames :: [ModSummary] -> [String]
                   getModNames sums = map extractName sums
                   extractName :: ModSummary -> String
@@ -76,5 +75,13 @@ module Main where
                   targetIsModule t = case (targetId t) of
                      TargetModule _ -> True
                      otherwise      -> False
+                  retrieveSource :: String -> (ParsedModule, TypecheckedModule, DesugaredModule) -> String
+                  retrieveSource compilerStage (p, t, d) =
+                     case compilerStage of
+                        "parsed" -> showData Parser 2 $ pm_parsed_source p
+                        "typed" -> showData TypeChecker 2 $ tm_typechecked_source t
+                        "desugared" -> showData TypeChecker 2 $ (tm_typechecked_source . dm_typechecked_module) d
+                  getStage compilerStage =
+                     if compilerStage == "parsed" then Parser else TypeChecker
 
  

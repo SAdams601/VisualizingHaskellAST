@@ -16,6 +16,7 @@ build-type:          Simple
 cabal-version:       >=1.10
 
 executable VisualizingHaskellAST
+
   main-is:             Main.hs              
   -- other-modules:       
   -- other-extensions:    
