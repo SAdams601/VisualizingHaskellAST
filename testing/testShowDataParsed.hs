@@ -12,6 +12,7 @@
     [
      (L {testing/test.hs:3:1-13} 
       -- ValD (HsBind is) is a constructor for HsDecl id
+      -- Parsed representation of f
       (ValD 
        (FunBind 
         (L {testing/test.hs:3:1} 
@@ -48,6 +49,7 @@
              (EmptyLocalBinds))))] {!type placeholder here?!}) 
         (WpHole) {!NameSet placeholder here!} 
         (Nothing)))),
+      -- Parsed representation of g
      (L {testing/test.hs:5:1-13} 
       (ValD 
        (FunBind 

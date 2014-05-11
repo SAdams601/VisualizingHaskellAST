@@ -23,10 +23,8 @@ module Main where
    main = do
       args <- getArgs
       case args of
-         [compilerStage, targetFiles] -> do
-            let filesList = read targetFiles :: [String]
-
-            (modNames,strs) <- readModuleStrings compilerStage filesList
+         (compilerStage: targetFiles) -> do
+            (modNames,strs) <- readModuleStrings compilerStage targetFiles
             mapM_ putStr $ constructOutputStrings modNames strs
  
          _ -> do

@@ -6,13 +6,13 @@ A project to allow you to the what the GHC AST looks like as described by showDa
 How to Run
 ----------
 
-The script is expecting a list of strings that indicate what files to load into the module graph and which compiler stage you want to see. You have to fully escape the strings if you are running through cabal, an example of the fully escaped string is provided below. When run from the top directory this will output the desugared AST for the A and B modules.
+This script takes in a compiler stage keyword and then the files that are a part of the module graph you want to visualize. There are three compiler stages that are currently supported "parsed", "typed", and "desugared."  
+
+When run from the top directory this will output the desugared AST for the A and B modules.
 
 ```bash
-cabal run -- desugared "[\"testing/A.hs\",\"testing/B.hs\"]"
+cabal run -- desugared testing/A.hs testing/B.hs
 ```
-
-The other two keywords are "parsed" and "typed" for output of the parser and typechecker respectively.
 
 Sample Output
 -------------
