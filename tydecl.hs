@@ -151,7 +151,7 @@
                                (HsTyVar {Name: Types.Foo})) 
                               (L {testing/types.hs:7:18-20} 
                                (HsTyVar {Name: GHC.Types.Int}))))))])
-                        ------------------End VAL BINDs
+                        ------------------End VAL BINDs -------------------
                         [
                          [
                           (L {testing/types.hs:3:1-24} 
