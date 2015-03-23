@@ -23,11 +23,13 @@ module Main where
    main = do
       args <- getArgs
       case args of
-         (compilerStage: targetFiles) -> do
+        (compilerStage: targetFiles) ->
+          do
             (modNames,strs) <- readModuleStrings compilerStage targetFiles
             mapM_ putStr $ constructOutputStrings modNames strs
  
-         _ -> do
+        _ ->
+          do
             name <- getProgName
             hPutStrLn stderr $ "usage: " ++ name ++ " <string> <integer>"
             exitFailure
@@ -79,7 +81,11 @@ module Main where
                         "parsed" -> showData Parser 2 $ pm_parsed_source p
                         "typed" -> showData TypeChecker 2 $ tm_typechecked_source t
                         "desugared" -> showData TypeChecker 2 $ (tm_typechecked_source . dm_typechecked_module) d
+                        "renamed" -> showData Renamer 22$ (fromJust . tm_renamed_source) t
                   getStage compilerStage =
-                     if compilerStage == "parsed" then Parser else TypeChecker
+                     case compilerStage of
+                       "parsed" -> Parser
+                       "renamed" -> Renamer
+                       otherwise ->TypeChecker
 
  
