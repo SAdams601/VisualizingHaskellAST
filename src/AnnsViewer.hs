@@ -8,14 +8,6 @@ import Data.Map
 import System.IO
 import Control.Monad
 
-main :: IO ()
-main = do
-  Right (as, m) <- parseModule "testing/AnnsSample.hs"
-  printAnns as
-
-
--- type Anns = Map.Map AnnKey Annotation
-
 printAnns :: Anns -> IO ()
 printAnns anns = do
   let lst =  toList anns
