@@ -1,3 +1,4 @@
+{-#LANGUAGE TupleSections #-}
 module ArgsParser where
 import GHC.SYB.Utils
 import Text.ParserCombinators.Parsec
@@ -20,7 +21,12 @@ parser :: String -> Either ParseError Args
 parser argStr = parse parseArgs "parseArgs" argStr
 
 parseArgs :: CharParser () Args
-parseArgs = Args <$> parseStage <*> (spaces *> parseMode) <*> (spaces *> parseFiles)
+parseArgs = uncurry Args <$> parseOptions <*> (spaces *> parseFiles)
+
+parseOptions :: CharParser () (Stage, Mode)
+parseOptions =  (try modeOnly) <|> fullDecl <|> return (Parser, AST)
+  where modeOnly = (Parser,) <$> (spaces *> parseMode)
+        fullDecl = (,) <$> (spaces *> parseStage) <*> (spaces *> parseMode)
 
 parseStage :: CharParser () Stage
 parseStage = string "--stage" *> spaces *> char '=' *> spaces *> (parseRename <|> parseParser <|> parseTypecheck)
@@ -29,7 +35,7 @@ parseStage = string "--stage" *> spaces *> char '=' *> spaces *> (parseRename <|
         parseTypecheck = TypeChecker <$ string "typechecker"
         
 parseMode :: CharParser () Mode
-parseMode = string "--mode" *> spaces *> char '=' *> spaces *> (parseAstMd <|> parseAnnsMd)
+parseMode = string "--mode" *> spaces *> char '=' *> spaces *> ((try parseAstMd) <|> parseAnnsMd)
   where parseAstMd = AST <$ string "ast"
         parseAnnsMd = Anns <$ string "anns"
 
