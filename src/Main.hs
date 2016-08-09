@@ -19,6 +19,8 @@ import System.FilePath.Posix
 import ArgsParser
 import qualified Language.Haskell.GHC.ExactPrint.Parsers as Exactprint
 import AnnsViewer
+import qualified Language.Haskell.GHC.ExactPrint as Exactprint
+import qualified Language.Haskell.GHC.ExactPrint.Utils as Exactprint
 
    --targetFile = "src/A.hs"
 
@@ -31,7 +33,7 @@ main = do
   case parseRes of
     (Left err) -> do
       putStrLn "Error parsing arguments, arguments must take the following form."
-      putStr "--stage={renamer|parser|typechecker} --mode={ast|anns} "
+      putStr "--stage={renamer|parser|typechecker} --mode={ast|anns|both} "
       putStr "Followed by a list of files."
       putStrLn $ (show err)
       exitFailure
@@ -39,6 +41,7 @@ main = do
       case (mode args) of
         AST -> runAst args
         Anns -> runAnns args
+        Both -> runBoth args
   {-case args of
     (compilerStage: targetFiles) -> do
       (modNames,strs) <- readModuleStrings compilerStage targetFiles
@@ -47,6 +50,23 @@ main = do
       name <- getProgName
       hPutStrLn stderr $ "usage: " ++ name ++ " <string> <integer>"
       exitFailure-}
+
+runBoth :: Args -> IO ()
+runBoth args = do
+  dflags <- runGhc (Just libdir) $ getSessionDynFlags
+  res <- mapM Exactprint.parseModule (files args)
+  mapM_ handleRes res
+    where --handleRes :: Either (SrcSpan, String) (Exactprint.Anns, ParsedSource) -> IO ()
+          handleRes pRes =
+            case pRes of
+              (Right (anns, src)) -> do
+                  let sRes = Exactprint.showAnnData anns 3 src
+                  putStr sRes
+                  putStrLn "============================="                  
+              (Left (spn,str)) -> do
+                putStrLn "Parsing failed with message: "
+                putStrLn str
+                putStrLn "============================="
 
 runAst :: Args -> IO ()
 runAst args = do

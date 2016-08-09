@@ -5,8 +5,9 @@ import Text.ParserCombinators.Parsec
 import Text.ParserCombinators.Parsec.Language
 import Control.Applicative hiding ((<|>), many)
 import qualified Text.ParserCombinators.Parsec.Token as Token
+import Language.Haskell.GHC.ExactPrint.Utils
 
-data Mode = AST | Anns
+data Mode = AST | Anns | Both
             deriving (Show, Eq)
 
 data Args = Args {stage :: Stage,
@@ -35,9 +36,10 @@ parseStage = string "--stage" *> spaces *> char '=' *> spaces *> (parseRename <|
         parseTypecheck = TypeChecker <$ string "typechecker"
         
 parseMode :: CharParser () Mode
-parseMode = string "--mode" *> spaces *> char '=' *> spaces *> ((try parseAstMd) <|> parseAnnsMd)
+parseMode = string "--mode" *> spaces *> char '=' *> spaces *> ((try parseAstMd) <|> parseAnnsMd <|> parseBothMd)
   where parseAstMd = AST <$ string "ast"
         parseAnnsMd = Anns <$ string "anns"
+        parseBothMd = Both <$ string "both"
 
 -- I'm pretty sure this isn't quite correct because you could technically have escaped whitespace characters in file paths other than just the single space but what sort of monster does that! 
 parseFiles :: CharParser () [FilePath]
