@@ -35,7 +35,7 @@ main = do
       putStrLn "Error parsing arguments, arguments must take the following form."
       putStr "--stage={renamer|parser|typechecker} --mode={ast|anns|both} "
       putStr "Followed by a list of files."
-      putStrLn $ (show err)
+      print err
       exitFailure
     (Right args) ->
       case (mode args) of
