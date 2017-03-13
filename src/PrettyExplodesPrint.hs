@@ -38,14 +38,22 @@ makeTree (GHC.L _ mod) = let decls = hsmodDecls mod in
     comp :: HsBind RdrName -> Forest String 
     comp (GHC.FunBind (GHC.L _ id) _ matches _ _ _) =
           let label = "BIND: " ++ (processRdr id)
-              forest = everything (++) ([] `mkQ` exprC) (mg_alts matches)
+              mTree  = something (Nothing `mkQ` exprC) matches 
+              forest = case mTree of
+                Nothing -> []
+                Just t -> [t]
+                --everything (++) ([] `mkQ` exprC) (mg_alts matches)
           in
             [Node label forest]
-      where exprC :: HsExpr RdrName -> (Forest String)
-            exprC (HsVar id) = [(Node (processRdr id) [])]
-            exprC (HsLam mg) = [Node "Lam" (everything (++) ([] `mkQ` exprC) mg)]
-            exprC (HsApp (L _ l) (L _ r)) = [Node "App" ((exprC l) ++ (exprC r))]
-            exprC _ = []
+      where exprC :: HsExpr RdrName -> Maybe (Tree String)
+            exprC (HsVar id) = Just (Node (processRdr id) [])
+            exprC (HsLam mg) =
+              let f = case (something (Nothing `mkQ` exprC) mg) of
+                    Nothing -> []
+                    Just t -> [t] in
+                Just $ Node "Lam" f
+            exprC (HsApp (L _ l) (L _ r)) = Just $ Node "App" [(exprC l),(exprC r)]
+            exprC _ = Nothing
             
 
 genericTree :: (Typeable a, Typeable b) => (b -> Tree String) -> a -> Tree String
