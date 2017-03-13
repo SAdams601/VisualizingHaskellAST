@@ -29,5 +29,6 @@ executable visualize-ghc
                        , filepath
                        , ghc-exactprint
                        , parsec
-                       , containers 
+                       , containers
+                       , pretty-tree
   default-language:    Haskell2010

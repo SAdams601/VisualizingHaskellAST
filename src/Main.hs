@@ -21,6 +21,7 @@ import qualified Language.Haskell.GHC.ExactPrint.Parsers as Exactprint
 import AnnsViewer
 import qualified Language.Haskell.GHC.ExactPrint as Exactprint
 import qualified Language.Haskell.GHC.ExactPrint.Utils as Exactprint
+import PrettyExplodesPrint
 
    --targetFile = "src/A.hs"
 
