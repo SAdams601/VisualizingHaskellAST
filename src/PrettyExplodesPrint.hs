@@ -38,7 +38,7 @@ makeTree (GHC.L _ mod) = let decls = hsmodDecls mod in
     comp :: HsBind RdrName -> Forest String 
     comp (GHC.FunBind (GHC.L _ id) _ matches _ _ _) =
           let label = "BIND: " ++ (processRdr id)
-              forest = everything (++) ([] `mkQ` exprC) (mg_alts matches)
+              forest = something (++) (fromMaybe [] ) (mg_alts matches)
           in
             [Node label forest]
       where exprC :: HsExpr RdrName -> (Forest String)
