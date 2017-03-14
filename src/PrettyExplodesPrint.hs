@@ -30,7 +30,7 @@ run = do
       forest = makeTree pSource
 --      s = drawVerticalForest forest
   print $ length (hsmodDecls (unLoc pSource))
-  mapM_ (\t -> (putStrLn $ drawVerticalTree t) >> (putStrLn (replicate 60 '='))) forest
+  mapM_ (\t -> (putStrLn $ drawVerticalTree t) >> (putStrLn (replicate 112 '='))) forest
 
 makeTree :: ParsedSource -> Forest String
 makeTree (GHC.L _ mod) = everything (++) ([] `mkQ` (\e -> [comp e])) (hsmodDecls mod)
