@@ -12,7 +12,7 @@ import Data.Maybe
 import System.IO.Unsafe
 
 file :: FilePath
-file = "testing/explodes.hs"
+file = "testing/explodes2.hs"
 
 
 run :: IO ()
@@ -24,7 +24,7 @@ run = do
     target <- guessTarget file Nothing
     setTargets [target]
     load LoadAllTargets
-    modSum <- getModSummary $ mkModuleName "Explodes"
+    modSum <- getModSummary $ mkModuleName "Explodes2"
     parseModule modSum
   let pSource = pm_parsed_source p
       forest = makeTree pSource
