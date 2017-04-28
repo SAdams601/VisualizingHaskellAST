@@ -7,7 +7,8 @@ import DynFlags
 import GHC.SYB.Utils
 import Data.Tree
 import Data.Generics as SYB
-import OccName (occNameString)
+import OccName (occNameString, occName)
+import RdrName
 import Data.Maybe
 import System.IO.Unsafe
 import FastString
@@ -56,7 +57,15 @@ makeTree (GHC.L _ mod) = everything (++) ([] `mkQ` (\e -> [comp e])) (hsmodDecls
       let ml = (exprC l)
           mr = (exprC r) in
         [Node "App" (ml ++ mr)]
+    exprC (L _ (OpApp lhs (L _ (HsVar nm)) _ rhs)) =
+      let ml = (exprC lhs)
+          mop = processRdr nm
+          mr = (exprC rhs) in
+        [Node ("Op: " ++ mop) (ml++mr)]
     exprC (L _ (HsPar e)) = exprC e
+    exprC (L _ (SectionL l r)) = let ml = exprC l
+                                     mr = exprC r in
+                                   [Node "Section" (ml++mr)] 
     exprC (L _ (HsOverLit lit)) = [Node (processLit lit) []]
     exprC e = gmapQ ((Node "Error: exprC" []) `mkQ` (\ i -> Node "" (exprC i))) e
     
@@ -74,6 +83,7 @@ genericTree = mkQ (Node "ERROR" [])
 processRdr :: RdrName -> String
 processRdr (Unqual occ) = "Var: " ++ occNameString occ
 processRdr (Qual modnm occ) = "Var: " ++ (moduleNameString modnm) ++ "." ++ occNameString occ
+processRdr (Exact nm) = occNameString (occName nm)
 
 processLit :: HsOverLit RdrName -> String
 processLit lit = "Lit: " ++ (prc val)
