@@ -10,9 +10,11 @@ import Data.Generics as SYB
 import OccName (occNameString)
 import Data.Maybe
 import System.IO.Unsafe
+import FastString
+import BasicTypes
 
 file :: FilePath
-file = "testing/explodes2.hs"
+file = "testing/s.hs"
 
 
 run :: IO ()
@@ -24,7 +26,7 @@ run = do
     target <- guessTarget file Nothing
     setTargets [target]
     load LoadAllTargets
-    modSum <- getModSummary $ mkModuleName "Explodes2"
+    modSum <- getModSummary $ mkModuleName "S"
     parseModule modSum
   let pSource = pm_parsed_source p
       forest = makeTree pSource
@@ -55,6 +57,7 @@ makeTree (GHC.L _ mod) = everything (++) ([] `mkQ` (\e -> [comp e])) (hsmodDecls
           mr = (exprC r) in
         [Node "App" (ml ++ mr)]
     exprC (L _ (HsPar e)) = exprC e
+    exprC (L _ (HsOverLit lit)) = [Node (processLit lit) []]
     exprC e = gmapQ ((Node "Error: exprC" []) `mkQ` (\ i -> Node "" (exprC i))) e
     
     debug :: MatchGroup RdrName (LHsExpr RdrName) -> Forest String
@@ -71,3 +74,10 @@ genericTree = mkQ (Node "ERROR" [])
 processRdr :: RdrName -> String
 processRdr (Unqual occ) = "Var: " ++ occNameString occ
 processRdr (Qual modnm occ) = "Var: " ++ (moduleNameString modnm) ++ "." ++ occNameString occ
+
+processLit :: HsOverLit RdrName -> String
+processLit lit = "Lit: " ++ (prc val)
+      where val = ol_val lit
+            prc (HsIntegral _ i) = show i
+            prc (HsFractional f) = fl_text f
+            prc (HsIsString _ fs) = unpackFS fs
