@@ -15,7 +15,7 @@ build-type:          Simple
 -- extra-source-files:  
 cabal-version:       >=1.10
 
-executable visualize-ghc
+executable vghc
   Main-Is:             Main.hs
   Hs-Source-Dirs:      src                   
   Build-Depends:       base
@@ -31,4 +31,24 @@ executable visualize-ghc
                        , parsec
                        , containers
                        , pretty-tree
+  default-language:    Haskell2010
+
+executable visualize-ghc
+           ghc-options:         -threaded -Wall -fno-warn-unused-do-bind -O3
+           Main-Is: Main.hs
+           Hs-Source-Dirs: src/ui
+           Build-Depends:       base
+                       , ghc
+                       , Strafunski-StrategyLib
+                       , syb
+                       , ghc-paths
+                       , ghc-syb-utils
+                       , mtl
+                       , directory
+                       , filepath
+                       , ghc-exactprint
+                       , parsec
+                       , containers
+                       , pretty-tree
+                       , brick
   default-language:    Haskell2010
