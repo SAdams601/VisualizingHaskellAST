@@ -8,7 +8,7 @@ import System.Environment
 import System.IO ( hPutStrLn, stderr )
 import System.Exit ( exitFailure )
 import System.IO.Unsafe
-import Data.Generics
+import Data.Generics hiding (TyCon)
 import GHC.SYB.Utils
 import Data.List
 import FastString
@@ -22,7 +22,10 @@ import AnnsViewer
 import qualified Language.Haskell.GHC.ExactPrint as Exactprint
 import qualified Language.Haskell.GHC.ExactPrint.Utils as Exactprint
 import PrettyExplodesPrint
-
+import OccName
+import TypeRep
+import TyCon
+import HscTypes
    --targetFile = "src/A.hs"
 
    
@@ -159,3 +162,67 @@ readModuleStrings compilerStage targetFiles =
           otherwise ->TypeChecker
 
  
+
+printTypes :: String -> String -> IO ()
+printTypes targetFile modNm = do
+  str <- runGhc (Just libdir) $ do
+    dflags <- getSessionDynFlags
+    let dflags' = foldl xopt_set dflags [Opt_Cpp, Opt_ImplicitPrelude, Opt_MagicHash]
+    setSessionDynFlags dflags'
+    target <- guessTarget targetFile Nothing
+    setTargets [target]
+    load LoadAllTargets
+    modSum <- getModSummary $ mkModuleName modNm
+    p <- parseModule modSum
+    t <- typecheckModule p
+    let ts = tm_typechecked_source t        
+    return $ showModTypes ts
+  --putMd md
+  --putStrLn $ showData TypeChecker 3 tm
+  --putStrLn "----------END AST-------------"
+  putStrLn str
+    where putMd :: ModDetails -> IO ()
+          putMd md = do
+            putStrLn "Type Env: "
+            putStrLn $ showSDoc_ $ ppr (md_types md)
+
+            
+showModTypes :: TypecheckedSource -> String
+showModTypes ts = let res = everything (++) ([] `mkQ` comp) ts in
+  foldl (\l r -> l ++ "\n=================\n" ++ r) "" res
+  where
+    comp :: HsBind Id -> [String]
+    comp fb@(FunBind (L _ id) _ mg _ _ _) =
+      let idStr = occNameString $ getOccName id
+          idTy = idType id
+          topTy = idStr ++ "\n" ++ printType 3 idTy
+          rstTys = everything (++) ([] `mkQ` printVars) mg
+          res = topTy ++ " \nvar types: " ++ (foldl (\rst res -> rst ++ "\n------------" ++ res) "" rstTys) in
+        [res]
+        --        [idStr ++ " AST: " ++ showData Typechecker 3 fb, res]
+    comp _ = []
+    printVars :: Id -> [String]
+    printVars id = return $ indent 3 ++ (occNameString $ getOccName id) ++ " ::" ++ (printType 4  (idType id))
+
+printType :: Int -> Type -> String
+printType n (TyVarTy v) = indent n ++ "(TyVarTy " ++ showData TypeChecker (n+1) v ++ ")"
+printType n (AppTy t1 t2) = indent n ++ "(AppTy\n" ++ (printType (n+1) t1) ++ "\n" ++ (printType (n+1) t2) ++ "\n)"
+printType n (TyConApp tc lst) = indent n ++ "(TyConApp: " ++ (printCon tc) ++
+                                (foldl (\rst ty -> rst ++ "\n" ++ (printType (n+1) ty)) "" lst) ++ ")"
+printType n (FunTy t1 t2) = indent n ++ "(FunTy " ++ (printType (n+1) t1) ++ indent n ++ "->" ++ (printType (n+1) t2) ++ ")"
+printType n (ForAllTy v ty) = indent n ++ "(ForAllTy: " ++ (showData TypeChecker (n+1) v) ++ "\n" ++ (printType (n+1) ty) ++ "\n)"
+printType n (LitTy tl) = indent n ++ "(LitTy: " ++ showTyLit tl ++ ")"
+
+showTyLit :: TyLit -> String
+showTyLit (NumTyLit i) = show i
+showTyLit (StrTyLit fs) = show fs
+
+printCon :: TyCon -> String
+printCon tc
+  | isFunTyCon tc = "FunTyCon: " ++ shwTc tc
+--  | isAlgTyCon tc = "AlgTyCon: " ++ shwAlgTc tc
+  | otherwise = "TyCon: " ++ (show $ toConstr tc) ++ "|" ++ shwTc tc
+
+--shwAlgTyCon (AlgTyCon unq nm knd ar tyVars roles mCTy gadt stpdTheta rhs tcRec par prom) = ""
+shwTc = showSDoc_ . ppr
+indent i = "\n" ++ replicate i ' '

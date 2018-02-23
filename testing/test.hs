@@ -1,5 +1,4 @@
 module Test where
 
-f a b = a + b
-
-g a b = a - b
+cn :: [[a]] -> [a]
+cn lst = foldl (++) [] lst

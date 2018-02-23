@@ -7,6 +7,7 @@ import DynFlags
 import GHC.SYB.Utils
 import Data.Tree
 import Data.Generics as SYB
+import GHC.SYB.Utils as SYB
 import OccName (occNameString, occName)
 import RdrName
 import Data.Maybe
@@ -14,9 +15,10 @@ import System.IO.Unsafe
 import FastString
 import BasicTypes
 import Language.Haskell.GHC.ExactPrint as EP
+import Data.Generics.Strafunski.StrategyLib.StrategyLib
 
 file :: FilePath
-file = "testing/listfunctions.hs"
+file = "testing/eval.hs"
 
 
 run :: IO ()
@@ -32,14 +34,20 @@ run = do
 
 
 makeTree :: Anns -> ParsedSource -> Forest String
-makeTree anns (GHC.L _ mod) = everything (++) ([] `mkQ` (\e -> [comp e])) (hsmodDecls mod)
+makeTree anns (GHC.L _ mod) = map (\(L _ (GHC.ValD bnd)) -> comp bnd) filterMod 
   where
+    filterMod =  filter (\d ->case d of
+                            (L _ (GHC.ValD (GHC.FunBind _ _ _ _ _ _ ))) -> True
+                            _-> False) (hsmodDecls mod)
     comp :: HsBind RdrName -> Tree String 
-    comp (GHC.FunBind (GHC.L _ id) _ matches _ _ _) =
-      let label = "BIND: " ++ (processRdr id)
-          mTree = something (Nothing `mkQ` (\e -> Just $ exprC e)) matches
-          forest = fromMaybe [] mTree in
+    comp (GHC.FunBind (GHC.L _ id) _ mg _ _ _) =
+      let rdr = processRdr id
+          label = "BIND: " ++ rdr
+          matches = mg_alts mg
+          mTree = map (\(L _ m) -> something (Nothing `mkQ` (\e -> Just $ exprC e)) m) matches --everything (++) ([] `mkQ` exprC ) matches
+          forest = map (\(n,mt) -> Node (rdr ++ (show n)) (fromJust mt)) (zip [1..] mTree) in
         Node label forest
+    comp bnd = error ("Unexpected bind constructor: " ++ (SYB.showData SYB.Parser 3 bnd))
     exprC :: LHsExpr RdrName -> Forest String
     exprC (L _ (HsVar id)) = [Node (processRdr id) []]
     exprC (L _ (HsLam mg)) =
@@ -68,7 +76,11 @@ makeTree anns (GHC.L _ mod) = everything (++) ([] `mkQ` (\e -> [comp e])) (hsmod
                                      mr = exprC r in
                                    [Node "Section" (ml++mr)] 
     exprC (L _ (HsOverLit lit)) = [Node (processLit lit) []]
-    exprC e = gmapQ ((Node "Error: exprC" []) `mkQ` (\ i -> Node "" (exprC i))) e
+    exprC (L _ (ExplicitTuple lst _)) = [Node "Tuple" (mapMaybe procTuple lst)]
+          where procTuple :: LHsTupArg RdrName -> Maybe (Tree String)
+                procTuple (L _ (Present e)) = Just $ Node "TupleElem" (exprC e)
+                procTuple _ = Nothing
+    exprC e = unsafePerformIO  ((putStrLn ("exprC failure: " ++ SYB.showData SYB.Parser 3 e)) >> return (gmapQ ((Node "Error: exprC" []) `mkQ` (\ i -> Node "" (exprC i))) e))
     handleMG :: MatchGroup RdrName (LHsExpr RdrName) -> Forest String
     handleMG mg =
       let alts = mg_alts mg in
